@@ -22,6 +22,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AdminLayout from './pages/Admin/AdminLayout';
+import AdminDashboard from './pages/Admin/AdminDashboard';
+import OrderManagement from './pages/Admin/OrderManagement';
+import UserManagement from './pages/Admin/UserManagement';
+import ProductManagement from './pages/Admin/ProductManagement';
 
 function App() {
   return (
@@ -48,6 +53,14 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="orders" element={<OrderManagement />} />
+                  <Route path="users" element={<UserManagement />} />
+                  <Route path="products" element={<ProductManagement />} />
+                </Route>
               </Routes>
             </main>
             <Footer />
