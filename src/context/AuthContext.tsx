@@ -35,15 +35,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         fetchUserProfile(session.user);
+      } else {
+        setUser(null);
       }
       setIsLoading(false);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Clear previous user data before fetching new user
+        setUser(null);
         await fetchUserProfile(session.user);
-      } else {
+      } else if (event === 'SIGNED_OUT' || !session?.user) {
         setUser(null);
       }
       setIsLoading(false);
@@ -114,6 +118,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
+    // Clear current user before login
+    setUser(null);
+    
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -134,6 +141,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const loginWithGoogle = async () => {
+    // Clear current user before Google login
+    setUser(null);
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
